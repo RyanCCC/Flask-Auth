@@ -1,5 +1,7 @@
 # Flask-HTTPAuth
 
+使用Flask-HTTPAuth+Redis+PostGrepsql实现接口的token验证和权限管控
+
 ### Flask-HttPAuth
 
 ### Flask-SQLAlchemy
