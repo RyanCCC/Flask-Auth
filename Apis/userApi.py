@@ -8,6 +8,8 @@ from flask_restplus import fields
 from .Models import userModel
 import json
 from flask_httpauth import HTTPTokenAuth
+from functools import wraps
+from flask import g
 
 
 user_api = Namespace('userAuth', description='用户登录校验模块')
@@ -26,11 +28,25 @@ def verify_token(token):
     user = userModel.User.verify_auth_token(token)
     if not user:
         return False
+    g.user = user
     return True
 
 @token_auth.error_handler
 def tokenUnauthorized():
     return retJson(RetCode.NEED_LOGIN)
+
+
+def permission_required(permission):
+    def decorator(f):
+        @wraps(f)
+        def mywrap(*args, **kwargs):
+            user_permission = 2
+            if user_permission&permission==permission:
+                return f(*args, **kwargs)
+            else:
+                return retJson(RetCode.PERMISSION_REQUIED)
+        return mywrap
+    return decorator
 
 @user_api.route('/userinfo')
 class userinfo(Resource):
@@ -84,6 +100,7 @@ class token(Resource):
         flag = user.verify_password(userinfo['password'])
         if flag:
             token = user.generate_auth_token()
+            g.user = user
             return token.decode()
         else:
             return retJson(RetCode.LOGIN_ERROR)
@@ -95,15 +112,21 @@ class token(Resource):
         user = userModel.User(username, password)(password)
         return user
 
-user_id_header_parser  = user_api.parser()
-user_id_header_parser .add_argument('Authorization', location='headers')
+user_header_parser  = user_api.parser()
+user_header_parser .add_argument('Authorization', location='headers')
 
-@user_api.expect(user_id_header_parser)
+@user_api.expect(user_header_parser)
 @user_api.route('/helloworld')
 class helloworld(Resource):
     @token_auth.login_required()
     def get(self):
         return 'helloworld'
+    @token_auth.login_required()
+    @permission_required(userModel.Permission.ALLOW)
+    def post(self):
+        return 'hello world'
+
+
 
 
 

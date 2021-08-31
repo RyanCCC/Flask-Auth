@@ -29,6 +29,34 @@ def getuserinfo(username, password=None):
         cursor.close()
         connection.close()
 
+def getroleinfo(roleid, rolename):
+    params = []
+    try:
+        connection = psycopg2.connect(config.PGSQL_CONNECTSTRING)
+        cursor = connection.cursor()
+        sql = '''
+            select username, password from "role" where roleid = %s 
+        '''
+        params.append(roleid)
+        if rolename is not None:
+            sql += ' and rolename = %s '
+            params.append(rolename)
+        # 执行语句
+        cursor.execute(sql,params)
+        result = cursor.fetchall()
+        connection.commit()
+        ret_result = []
+        for item in result:
+            temp ={}
+            temp['username'], temp['password'] = item
+            ret_result.append(temp)
+        return ret_result
+    except Exception as e:
+        raise e
+    finally:
+        cursor.close()
+        connection.close()
+
 def regist(username, password):
     try:
         connection = psycopg2.connect(config.PGSQL_CONNECTSTRING)
