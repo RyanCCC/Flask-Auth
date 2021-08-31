@@ -1,5 +1,5 @@
 from flask_restplus import Api
-from .user import user_api
+from .userApi import user_api
 
 Auth_api  = Api(
     version='1.0',
