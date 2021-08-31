@@ -3,19 +3,26 @@ import config as config
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-def getuserinfo(username):
+def getuserinfo(username, password=None):
+    params = []
     try:
         connection = psycopg2.connect(config.PGSQL_CONNECTSTRING)
         cursor = connection.cursor()
         sql = '''
-            select username, password from user where username = %s
+            select username, password from "user" where username = %s 
         '''
-        params = (username,)
+        params.append(username)
+        if password is not None:
+            sql += ' and password = %s '
+            params.append(password)
         # 执行语句
         cursor.execute(sql,params)
         result = cursor.fetchall()
         connection.commit()
-        return result
+        ret_result = {}
+        if len(result)>0:
+            ret_result['username'], ret_result['password'] = result[0]
+        return ret_result
     except Exception as e:
         raise e
     finally:

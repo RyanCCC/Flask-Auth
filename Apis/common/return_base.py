@@ -16,7 +16,7 @@ def retJson(status, data=''):
         'msg':status[1],
         'data':data
     }
-    return jsonify(data)
+    return jsonify(result)
 
 class ParamsError(Exception):
     def __init__(self, data=None, *args, **kwargs):
