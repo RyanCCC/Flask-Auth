@@ -1,4 +1,3 @@
-# coding: utf-8
 from datetime import datetime, timedelta
 from flask import g, render_template, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
@@ -330,7 +329,7 @@ if __name__ == '__main__':
     app.debug = True
     app.secret_key = 'development'
     app.config.update({
-        'SQLALCHEMY_DATABASE_URI': ''
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///test.sqlite'
     })
     app = create_server(app)
     app.run()
