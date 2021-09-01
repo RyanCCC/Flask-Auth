@@ -9,11 +9,12 @@ def getuserinfo(username, password=None):
         connection = psycopg2.connect(config.PGSQL_CONNECTSTRING)
         cursor = connection.cursor()
         sql = '''
-            select username, password from "user" where username = %s 
+            SELECT u.userid, up.permissionid, u.username, per.permissionname, per.permissioncode, u.password FROM "user" u inner join "user_permission" up on u.userid = up.userid\
+                 inner join "permission" per on per.permissionid = up.permissionid where u.username = %s
         '''
         params.append(username)
         if password is not None:
-            sql += ' and password = %s '
+            sql += ' and u.password = %s '
             params.append(password)
         # 执行语句
         cursor.execute(sql,params)
@@ -21,7 +22,7 @@ def getuserinfo(username, password=None):
         connection.commit()
         ret_result = {}
         if len(result)>0:
-            ret_result['username'], ret_result['password'] = result[0]
+            ret_result['userid'], ret_result['permissionid'], ret_result['username'], ret_result['permissionname'], ret_result['permissioncode'], ret_result['password'] = result[0]
         return ret_result
     except Exception as e:
         raise e

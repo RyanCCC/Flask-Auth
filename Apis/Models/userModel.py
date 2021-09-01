@@ -9,14 +9,13 @@ SECRET_KEY = 'agcimai'
 
 class Permission(object):
     NOW_ALLLOW = 0
-    ALLOW = 1     # 0b000000000000001
-    ALLOW_1 = 2  # 0b000000000000010
+    PERMISSION1 = 1     # 0b000000000000001
+    PERMISSION2 = 2  # 0b000000000000010
 
 class User(object):
     def __init__(self, username=None, password=None):
         self.__username = username
         self.__password = password
-        # self.password_hash = generate_password_hash(password)
     
     @property
     def username(self):
@@ -57,6 +56,8 @@ class User(object):
             return None    # invalid token
         user = getuserinfo(data['username'])
         return user
+    
+
 
             
 '''

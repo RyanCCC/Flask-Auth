@@ -18,7 +18,7 @@ USER_RESOURCE = user_api.model(
     'POIModel',
     {
         'username':fields.String('', Required=True),
-        'password':fields.String(default=' ', Required=True)
+        'password':fields.String(default=' ', Required=True) 
     }
 )
 token_auth = HTTPTokenAuth(scheme='Bearer')
@@ -40,7 +40,7 @@ def permission_required(permission):
     def decorator(f):
         @wraps(f)
         def mywrap(*args, **kwargs):
-            user_permission = 2
+            user_permission =int(g.user['permissioncode'])
             if user_permission&permission==permission:
                 return f(*args, **kwargs)
             else:
@@ -122,7 +122,7 @@ class helloworld(Resource):
     def get(self):
         return 'helloworld'
     @token_auth.login_required()
-    @permission_required(userModel.Permission.ALLOW)
+    @permission_required(userModel.Permission.PERMISSION2)
     def post(self):
         return 'hello world'
 
