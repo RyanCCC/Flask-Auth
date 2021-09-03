@@ -543,6 +543,37 @@ http://www.pythondoc.com/flask-sqlalchemy/api.html
 
 ### OAuth2
 
+OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将服务提供者上的用户的用户密码提供给第三方移动应用或分享他们数据的所有内容。
+
+图来源：[OAuth2详解](https://www.jianshu.com/p/84a4b4a1e833)
+
+![image](https://user-images.githubusercontent.com/27406337/131957491-83e44bd2-cb3b-49d1-9539-0b412aa63bc8.png)
+
+QAuth运作流程：1. 用户（Resource Owner）打开客户端（User Agent），客户端要求用户给与第三方服务提供方（HTTP service）授权并附上client id和URI；2. 第三方服务提供方即授权方接收到请求后，向用户询问是否进行授权。方法是让用户提供用户名和密码。3. 用户同意授权后，授权方重定向到客户端提供和的URL并附上授权码（Authorization code）。4. 客户端拿到授权码后向认证服务端（Authorization server）申请令牌。5. 认证服务端确认客户端的请求无误后向客户端发放令牌。5. 客户端拿到令牌后即可在资源服务器（Resource server）申请资源。
+![image](https://user-images.githubusercontent.com/27406337/131957778-a510b1f8-612e-4a4f-8795-bf7949bbef1f.png)
+
+**授权模式**
+
+- 授权码模式：功能最完整，流程最严密的授权模式
+  
+  （1）用户访问客户端，后者将前者导向认证服务器，假设用户给予授权，认证服务器将用户导向客户端事先指定的"重定向URI"（redirection URI），同时附上一个授权码。
+
+  （2）客户端收到授权码，附上早先的"重定向URI"，向认证服务器申请令牌：GET /oauth/token?response_type=code&client_id=test&redirect_uri=重定向页面链接。请求成功返回code授权码，一般有效时间是10分钟。
+
+  （3）认证服务器核对了授权码和重定向URI，确认无误后，向客户端发送访问令牌（access token）和更新令牌（refresh token）。POST /oauth/token?response_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA&redirect_uri=重定向页面链接。
+
+- 简化模式
+   
+   ![image](https://user-images.githubusercontent.com/27406337/131958726-323aa05c-bd38-479f-84b8-0d2854309b61.png)
+
+- 用户名密码模式
+
+   ![image](https://user-images.githubusercontent.com/27406337/131958858-15670a81-dabc-4d87-b338-70c50ee801a7.png)
+
+- 客户端模式
+   
+   ![image](https://user-images.githubusercontent.com/27406337/131958926-86ec360d-1067-4ea9-a4ab-8c1f2fc74982.png)
+
 
 ### 参考
 
