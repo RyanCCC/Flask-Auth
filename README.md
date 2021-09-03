@@ -376,6 +376,171 @@ def verify_token(token):
 
 ### Flask-SQLAlchemy
 
+这个类似于EF，我还是不太喜欢用这个，例如操作pgsql直接用的是psycopg2，这样可以更加方便调试。
+
+**一个简单的应用**
+
+```python
+
+from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+db = SQLAlchemy(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120), unique=True)
+
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+# 创建数据库
+
+from yourapplication import db
+db.create_all()
+
+# 创建用户
+
+>>> from yourapplication import User
+>>> admin = User('admin', 'admin@example.com')
+>>> guest = User('guest', 'guest@example.com')
+
+# 写入用户
+>>> db.session.add(admin)
+>>> db.session.add(guest)
+>>> db.session.commit()
+
+# 简单的关系
+
+from datetime import datetime
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80))
+    body = db.Column(db.Text)
+    pub_date = db.Column(db.DateTime)
+
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship('Category',
+        backref=db.backref('posts', lazy='dynamic'))
+
+    def __init__(self, title, body, category, pub_date=None):
+        self.title = title
+        self.body = body
+        if pub_date is None:
+            pub_date = datetime.utcnow()
+        self.pub_date = pub_date
+        self.category = category
+
+    def __repr__(self):
+        return '<Post %r>' % self.title
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Category %r>' % self.name
+```
+
+**配置参数说明：**
+
+| 配置 | 说明 |
+|-------|------|
+|SQLALCHEMY_DATABASE_URI| 用于连接数据的数据库。例如：sqlite:////tmp/test.db mysql://username:password@server/db|
+|SQLALCHEMY_BINDS|	一个映射绑定 (bind) 键到 SQLAlchemy 连接 URIs 的字典。 更多的信息请参阅 绑定多个数据库。|
+|SQLALCHEMY_ECHO|	如果设置成 True，SQLAlchemy 将会记录所有 发到标准输出(stderr)的语句，这对调试很有帮助。|
+|SQLALCHEMY_RECORD_QUERIES	| 可以用于显式地禁用或者启用查询记录。查询记录 在调试或者测试模式下自动启用。更多信息请参阅 get_debug_queries()。|
+|SQLALCHEMY_NATIVE_UNICODE|	可以用于显式地禁用支持原生的 unicode。这是 某些数据库适配器必须的（像在 Ubuntu 某些版本上的 PostgreSQL），当使用不合适的指定无编码的数据库 默认值时。|
+|SQLALCHEMY_POOL_SIZE|	数据库连接池的大小。默认是数据库引擎的默认值 （通常是 5）。|
+|SQLALCHEMY_POOL_TIMEOUT|	指定数据库连接池的超时时间。默认是 10。|
+|SQLALCHEMY_POOL_RECYCLE|	自动回收连接的秒数。这对 MySQL 是必须的，默认 情况下 MySQL 会自动移除闲置 8 小时或者以上的连接。 需要注意地是如果使用 MySQL 的话， Flask-SQLAlchemy 会自动地设置这个值为 2 小时。|
+|SQLALCHEMY_MAX_OVERFLOW|	控制在连接池达到最大值后可以创建的连接数。当这些额外的 连接回收到连接池后将会被断开和抛弃。|
+|SQLALCHEMY_TRACK_MODIFICATIONS|	如果设置成 True (默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号。这需要额外的内存， 如果不必要的可以禁用它。|
+
+**连接URI格式**
+
+```python
+dialect+driver://username:password@host:port/database
+```
+
+**声明模型**
+
+```python
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120), unique=True)
+
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+```
+| 类型 | 说明 |
+|----|----|
+|Integer|	一个整数|
+|String (size)|	有长度限制的字符串|
+|Text|	一些较长的 unicode 文本|
+|DateTime	表示为 Python datetime 对象的 时间和日期|
+|Float	存储浮点值|
+|Boolean|	存储布尔值|
+|PickleType	存储为一个持久化的 Python 对象|
+|LargeBinary|	存储一个任意大的二进制数据|
+
+**one to many**
+
+```python
+class Person(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    addresses = db.relationship('Address', backref='person',
+                                lazy='dynamic')
+
+class Address(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(50))
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+```
+
+
+**many to many**
+
+
+```python
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
+)
+
+class Page(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tags = db.relationship('Tag', secondary=tags,
+        backref=db.backref('pages', lazy='dynamic'))
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+```
+
+**API Document**
+
+http://www.pythondoc.com/flask-sqlalchemy/api.html
+
 ### OAuth2
 
 
