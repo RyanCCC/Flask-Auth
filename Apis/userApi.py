@@ -67,7 +67,7 @@ class userinfo(Resource):
             return retJson(RetCode.PARAMS_ERROR)
         else:
             userinfo = userModel.User(username, password)
-            userinfo.password_hash(password)
+            userinfo.password_hash()
             userinfo.regist()
         return 'success'
     

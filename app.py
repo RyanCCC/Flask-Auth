@@ -1,5 +1,4 @@
 from flask import Flask
-import flask
 from Apis import Auth_api
 
 app = Flask(__name__)
