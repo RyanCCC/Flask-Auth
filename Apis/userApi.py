@@ -113,7 +113,7 @@ class token(Resource):
         return user
 
 user_header_parser  = user_api.parser()
-user_header_parser .add_argument('Authorization', location='headers')
+user_header_parser.add_argument('Authorization', location='headers')
 
 @user_api.expect(user_header_parser)
 @user_api.route('/helloworld')

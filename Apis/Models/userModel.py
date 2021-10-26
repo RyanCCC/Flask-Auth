@@ -5,7 +5,7 @@ from ..common.usermethod import *
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
 
-SECRET_KEY = 'agcimai'
+SECRET_KEY = 'test'
 
 class Permission(object):
     NOW_ALLLOW = 0
@@ -43,7 +43,10 @@ class User(object):
     
     def generate_auth_token(self, expiration=600):
         s = Serializer(SECRET_KEY, expires_in=expiration)
-        return s.dumps({'username': self.__username})
+        # saveToken inredis
+        token = s.dumps({'username': self.__username})
+        saveToken(self.__username, token.decode(), expiration)
+        return token
     
     @staticmethod
     def verify_auth_token(token):

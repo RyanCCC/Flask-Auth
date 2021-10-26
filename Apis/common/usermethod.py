@@ -1,7 +1,6 @@
 import psycopg2
 import config as config
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from .redisdb import RedisClient
 
 def getuserinfo(username, password=None):
     params = []
@@ -77,5 +76,16 @@ def regist(username, password):
     finally:
         cursor.close()
         connection.close()
+    
+
+'''
+使用redis记录token并设置失效时间
+'''
+def saveToken(user, token, expiration=300):
+    redis = RedisClient(config.REDIS_HOST, config.REDIS_PORT, config.REDIS_PASSWORD)
+    redis.handle_redis_token(user, token, expiration)
+    
+    
+
             
 
