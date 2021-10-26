@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ..common.usermethod import *
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
+import time
 
 SECRET_KEY = 'test'
 
@@ -27,14 +28,24 @@ class User(object):
     @classmethod
     def getuserinfo(cls, username):
         try:
-            result = getuserinfo(username)
+            query_doc = {}
+            query_doc['username'] = username
+            filter = {}
+            filter["_id"] = 0
+            result = getuserinfo(query_doc, filter)
             return result
         except Exception as e:
             raise e
 
     def regist(self):
         try:
-            regist(self.__username, self.__password)
+            userinfo={}
+            userinfo['password'] = self.__password
+            userinfo['username'] = self.__username
+            userinfo['role'] = 'admin'
+            userinfo['createtime'] = time.strftime("%Y-%m-%d %H:%M:%S")
+            userinfo['status'] = True
+            regist(userinfo)
         except Exception as e:
             raise e
 
@@ -57,7 +68,11 @@ class User(object):
             return None    # valid token, but expired
         except Exception:
             return None    # invalid token
-        user = getuserinfo(data['username'])
+        query_doc = {}
+        query_doc['username'] = data['username']
+        filter = {}
+        filter["_id"] = 0
+        user = getuserinfo(query_doc, filter)
         return user
     
 
