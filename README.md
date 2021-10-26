@@ -2,7 +2,31 @@
 
 使用Flask-HTTPAuth+PostGrepsql实现接口的token验证和权限管控
 
-### Flask-HttPAuth
+## HOW TO USE
+1. 运行```app.py```，访问http://127.0.0.1:5000/swagger-ui.html 出现以下swagger ui界面：
+![image](https://user-images.githubusercontent.com/27406337/138835289-cb3426b2-bc8f-4108-8906-5416edb94fd8.png)
+
+2. 使用“注册新的用户信息”的接口，添加一个新的用户
+成功即可返回“success”
+![image](https://user-images.githubusercontent.com/27406337/138835820-54f6d52d-6027-4491-b3a2-626f152441c4.png)
+
+3. 获取用户信息
+
+![image](https://user-images.githubusercontent.com/27406337/138836808-1f943314-4b94-497c-adb4-83e14ab02ac0.png)
+
+4. 调用loginin接口获取获取token
+
+![image](https://user-images.githubusercontent.com/27406337/138836941-7f5f43e8-280a-4c3d-bb8d-7729676cf4ec.png)
+
+5. 调用helloworld
+
+![image](https://user-images.githubusercontent.com/27406337/138837108-6aca0bb1-5cea-4cff-8f9a-42fdade4e77a.png)
+
+
+
+
+
+# Flask-HttPAuth
 
 [Welcome to Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/en/latest/)
 
@@ -541,7 +565,7 @@ class Tag(db.Model):
 
 http://www.pythondoc.com/flask-sqlalchemy/api.html
 
-### OAuth2
+# OAuth2
 
 OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将服务提供者上的用户的用户密码提供给第三方移动应用或分享他们数据的所有内容。
 
@@ -575,7 +599,7 @@ QAuth运作流程：1. 用户（Resource Owner）打开客户端（User Agent）
    ![image](https://user-images.githubusercontent.com/27406337/131958926-86ec360d-1067-4ea9-a4ab-8c1f2fc74982.png)
 
 
-### 参考
+# 参考
 
 1. [Flask-HTTPAuth](https://github.com/miguelgrinberg/Flask-HTTPAuth)
 2. [Flask-HTTPAuth-Document](https://flask-httpauth.readthedocs.io/en/latest/)
