@@ -1,6 +1,6 @@
 # Flask-HTTPAuth
 
-使用Flask-HTTPAuth+PostGrepsql实现接口的token验证和权限管控
+使用Flask-HTTPAuth+MongoDB实现接口的token验证和权限管控
 
 ## HOW TO USE
 1. 运行```app.py```，访问http://127.0.0.1:5000/swagger-ui.html 出现以下swagger ui界面：
