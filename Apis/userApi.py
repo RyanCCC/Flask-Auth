@@ -132,7 +132,15 @@ class token(Resource):
         username = req_data['username']
         password = req_data['password']
         user = userModel.User(username, password)(password)
-        return user
+        # 登录校验
+        userinfo = user.getuserinfo(username=username)
+        flag = user.verify_password(userinfo['password'])
+        if flag:
+            token = user.generate_auth_token()
+            g.user = user
+            return token.decode()
+        else:
+            return retJson(RetCode.LOGIN_ERROR)
 
 user_header_parser  = user_api.parser()
 user_header_parser.add_argument('Authorization', location='headers')
