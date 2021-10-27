@@ -15,10 +15,19 @@ from flask import g
 user_api = Namespace('userAuth', description='用户登录校验模块')
 
 USER_RESOURCE = user_api.model(
-    'POIModel',
+    'USERModel',
     {
         'username':fields.String('', Required=True),
         'password':fields.String(default=' ', Required=True) 
+    }
+)
+USER_RESOURCE_UPDATE = user_api.model(
+    'USERModel',
+    {
+        'username':fields.String('', Required=True),
+        'password':fields.String(default=' ', Required=True),
+        'role':fields.String(default=' ',Required=True),
+        'status':fields.String(default=' ',Required=True) 
     }
 )
 token_auth = HTTPTokenAuth(scheme='Bearer')
@@ -68,17 +77,30 @@ class userinfo(Resource):
         else:
             userinfo = userModel.User(username, password)
             userinfo.password_hash()
-            userinfo.regist()
-        return 'success'
+            userid = userinfo.regist()
+        return userid
     
+    @user_api.expect(USER_RESOURCE_UPDATE)
     def put(self):
         '''修改用户信息'''
-        # TODO
+        req_data = json.loads(request.data.decode())
+        username = req_data['username']
+        password = req_data['password']
+        role = req_data['role']
+        status = req_data['status']
+        if None in (username, password):
+            return retJson(RetCode.PARAMS_ERROR)
+        else:
+            userinfo = userModel.User(username, password)
+            userinfo.password_hash()
+            userid = userinfo.updateuserinfo(role, status)
         return 'success'
 
+    @user_api.doc(params={'objectid':''})
     def delete(self):
         '''删除用户信息'''
-        #TODO
+        objectid = request.args.get('objectid')
+        result = userModel.User.deleteUser(objectid)
         return 'success'
 
 

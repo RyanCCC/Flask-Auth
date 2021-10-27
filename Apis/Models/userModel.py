@@ -45,9 +45,25 @@ class User(object):
             userinfo['role'] = 'admin'
             userinfo['createtime'] = time.strftime("%Y-%m-%d %H:%M:%S")
             userinfo['status'] = True
-            regist(userinfo)
+            userid = regist(userinfo)
+            return userid
         except Exception as e:
             raise e
+
+    def updateuserinfo(self,role, status):
+        try:
+            userinfo={}
+            userinfo['username'] = self.__username
+            userinfo['password'] = self.__password
+            userinfo['role'] = role
+            userinfo['status'] = status
+            condition = {'username':self.__username}
+            result = updateuser(condition, userinfo)
+            return result
+        except Exception as e:
+            raise e
+
+
 
     def verify_password(self, password):
         return check_password_hash(password, self.__password)
@@ -75,7 +91,10 @@ class User(object):
         user = getuserinfo(query_doc, filter)
         return user
     
-
+    @staticmethod
+    def deleteUser(objectid):
+        result = deleteUser(objectid)
+        return result
 
             
 '''

@@ -1,13 +1,15 @@
+import bson
 import psycopg2
 import config as config
 from .redisdb import RedisClient
 from .mongodb import MongoClient
+from bson import ObjectId
 
 def getuserinfo(query_doc, filter):
     try:
         client = MongoClient(config.MONGODB_HOST, int(config.MONGODB_PORT), username = config.MONGODB_USER, password= config.MONGODB_PASSWORD)
-        db = client.database('Agcimai')
-        result = db['userinfo'].find_one(query_doc, filter)
+        db = client.database('agcimai')
+        result = db['user'].find_one(query_doc, filter)
         return result
     except Exception as e:
         raise e
@@ -47,12 +49,37 @@ def regist(userinfo):
         client = MongoClient(config.MONGODB_HOST, int(config.MONGODB_PORT), username = config.MONGODB_USER, password= config.MONGODB_PASSWORD)
         db = client.database('agcimai')
         result = db['user'].insert_one(userinfo)
+        return str(result.inserted_id)
+    except Exception as e:
+        raise e
+    finally:
+        client.close()
+
+def updateuser(condition, userinfo):
+    try:
+        client = MongoClient(config.MONGODB_HOST, int(config.MONGODB_PORT), username = config.MONGODB_USER, password= config.MONGODB_PASSWORD)
+        db = client.database('agcimai')
+        result = db['user'].update_one(condition, {'$set':userinfo})
         return result
     except Exception as e:
         raise e
     finally:
         client.close()
-    
+
+def deleteUser(objectid):
+    try:
+        condition={}
+        condition['_id'] = ObjectId(objectid)
+        client = MongoClient(config.MONGODB_HOST, int(config.MONGODB_PORT), username = config.MONGODB_USER, password= config.MONGODB_PASSWORD)
+        db = client.database('agcimai')
+        result = db['user'].delete_one(condition)
+        return result
+    except Exception as e:
+        raise e
+    finally:
+        client.close()
+
+
 
 '''
 使用redis记录token并设置失效时间
