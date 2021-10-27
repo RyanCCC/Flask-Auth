@@ -45,8 +45,8 @@ def getroleinfo(roleid, rolename):
 def regist(userinfo):
     try:
         client = MongoClient(config.MONGODB_HOST, int(config.MONGODB_PORT), username = config.MONGODB_USER, password= config.MONGODB_PASSWORD)
-        db = client.database('Agcimai')
-        result = db['userinfo'].insert_one(userinfo)
+        db = client.database('agcimai')
+        result = db['user'].insert_one(userinfo)
         return result
     except Exception as e:
         raise e
