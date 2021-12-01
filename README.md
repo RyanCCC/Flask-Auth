@@ -23,7 +23,9 @@
 ![image](https://user-images.githubusercontent.com/27406337/138837108-6aca0bb1-5cea-4cff-8f9a-42fdade4e77a.png)
 
 
+# 数据库
 
+本项目中主要使用到的数据库有：mongodb、redis以及postgrepsql，详细可以分别参考我的博客：[python Nosql数据库操作](https://blog.csdn.net/u012655441/article/details/120761110)。
 
 
 # Flask-HttPAuth
@@ -598,6 +600,10 @@ QAuth运作流程：1. 用户（Resource Owner）打开客户端（User Agent）
    
    ![image](https://user-images.githubusercontent.com/27406337/131958926-86ec360d-1067-4ea9-a4ab-8c1f2fc74982.png)
 
+# 待办
+
+- [ ] 添加角色功能
+- [ ] 考虑redis token机制
 
 # 参考
 
