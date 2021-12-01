@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package iris;
+
+message IrisPredictRequest {// 定义参数1
+    float sepal_length = 1;//参数字段1
+    float sepal_width = 2;//参数字段2
+    float petal_length = 3;//参数字段3
+    float petal_width = 4;//参数字段4
+}
+
+message IrisPredictResponse {// 定义参数1
+    int32 species = 1;
+}
+
+service IrisPredictor{// 定义服务
+    rpc predict_iris_species(IrisPredictRequest) returns (IrisPredictResponse){} 
+}
