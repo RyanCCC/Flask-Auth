@@ -600,10 +600,18 @@ QAuth运作流程：1. 用户（Resource Owner）打开客户端（User Agent）
    
    ![image](https://user-images.githubusercontent.com/27406337/131958926-86ec360d-1067-4ea9-a4ab-8c1f2fc74982.png)
 
-# 待办
+# 异步编程
+对于Python的异步编程，我个人的想法是要么直接用python的关键字asyncio或者用一些组件如redis或者rabbitmq。
 
-- [ ] 添加角色功能
-- [ ] 考虑redis token机制
+## asyncio
+
+## redis
+
+## rabbitmq
+
+
+
+
 
 # 参考
 
