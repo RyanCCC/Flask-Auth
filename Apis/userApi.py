@@ -1,5 +1,4 @@
 import sys
-import flask
 sys.path.append('../')
 from flask_restplus import Resource, Namespace
 from flask import request, make_response, Response
