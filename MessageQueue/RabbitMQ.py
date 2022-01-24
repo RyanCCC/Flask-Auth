@@ -24,11 +24,16 @@ class RabbitProducer():
             pika.ConnectionParameters(host=self._host, port=self._port, virtual_host=self._virtual_host, credentials=credentials)
         )
         return self.__connection.is_open
-    
-    def publish_message(self,message, exchange =''):
+
+    def publish_message(self,message):
         channel = self.__connection.channel()
-        result = channel.queue_declare(queue=self._queue)
-        channel.basic_publish(exchange=exchange, routing_key=self._queue, body=message)
+        # # 声明exchange的名字和类型
+        # channel.exchange_declare(exchange=exchange, exchange_type='fanout')
+        # # 将消息放到“邮筒”
+        # channel.basic_publish(exchange=exchange, body=message, routing_key='')
+        # 将消息放到邮局
+        result = channel.queue_declare(queue=self._queue, durable=True)
+        channel.basic_publish(exchange='', routing_key=self._queue, body=message, properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE))
         self.__connection.close()
 
         
@@ -50,7 +55,7 @@ class RabbitComsumer():
         self.__connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self._host, port=self._port, virtual_host=self._virtual_host, credentials=credentials)
         )
-        return self.__connection is None
+        return self.__connection.is_open
     
     def subscribe(self):
         channel = self.__connection.channel()
