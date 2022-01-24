@@ -8,6 +8,7 @@ class RetCode(object):
     PERMISSION_REQUIED = (403, "权限不足")
     PAGE_NOT_FOUND = (404, "此页面不存在")
     SERVER_ERROR = (500, "服务器异常，紧急修复中...")
+    USER_NOT_FOUND = (200, "查无此人")
 
 
 def retJson(status, data=''):

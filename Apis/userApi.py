@@ -118,6 +118,8 @@ class token(Resource):
         user = userModel.User(username=username, password=password)
         # 登录校验
         userinfo = user.getuserinfo(username=username)
+        if userinfo is None:
+            return retJson(RetCode.USER_NOT_FOUND)
         flag = user.verify_password(userinfo['password'])
         if flag:
             token = user.generate_auth_token()
@@ -148,6 +150,7 @@ user_header_parser.add_argument('Authorization', location='headers')
 @user_api.route('/helloworld')
 class helloworld(Resource):
     @token_auth.login_required()
+    @permission_required(userModel.Permission.PERMISSION2)
     def get(self):
         return 'helloworld'
     @token_auth.login_required()
