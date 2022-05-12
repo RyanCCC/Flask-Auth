@@ -28,7 +28,6 @@ class Camera(BaseCamera):
     def frames():
         try:
             camera = Camera.camera
-            count = 0
             while True:
                 # read current frame
                 ref, frame = camera.read()

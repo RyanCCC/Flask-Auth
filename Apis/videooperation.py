@@ -41,6 +41,6 @@ class video(Resource):
                     mimetype='multipart/x-mixed-replace; boundary=frame')
         except Exception as e:
             result = {}
-            result['code'] = 200
+            result['code'] = 500
             result['message'] = str(e)
             return result
