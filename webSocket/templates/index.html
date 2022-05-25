@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+</head>
+<body>
+<h1 id="tag"></h1>
+<script type="text/javascript">
+    $(document).ready(function() {
+        namespace = '/videodata';
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+        socket.on('server_response', function(res) {
+            console.log(res.data);
+            $('#tag').text(res.data);
+        });
+    });
+</script>
+</body>
+</html>
